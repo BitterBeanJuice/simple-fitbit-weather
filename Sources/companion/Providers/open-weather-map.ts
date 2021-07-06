@@ -57,7 +57,7 @@ const mapping_codes = {
  */
 export function fetchWeather(apiKey: string, latitude: number, longitude: number): Promise<Weather> {
     return new Promise<Weather>((resolve, reject) => {
-        const url = 'https://api.openweathermap.org/data/2.5/weather?appid=' + apiKey + '&lat=' + latitude + '&lon=' + longitude;
+        const url = 'https://api.openweathermap.org/data/2.5/onecall?appid=' + apiKey + '&lat=' + latitude + '&lon=' + longitude + "&exclude=hourly,minutely";
 
         fetch(encodeURI(url))
             .then(response => response.json())
