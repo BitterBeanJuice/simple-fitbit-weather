@@ -55,7 +55,7 @@ var mapping_codes = {
  */
 export function fetchWeather(apiKey, latitude, longitude) {
     return new Promise(function (resolve, reject) {
-        var url = 'https://api.openweathermap.org/data/2.5/weather?appid=' + apiKey + '&lat=' + latitude + '&lon=' + longitude;
+        var url = 'https://api.openweathermap.org/data/2.5/onecall?appid=' + apiKey + '&lat=' + latitude + '&lon=' + longitude + "&exclude=hourly,minutely";
         fetch(encodeURI(url))
             .then(function (response) { return response.json(); })
             .then(function (data) {
