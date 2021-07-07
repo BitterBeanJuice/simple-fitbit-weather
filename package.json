@@ -18,7 +18,7 @@
     "weather",
     "typescript"
   ],
-  "files": ["./Distribution/**/*.ts","./Distribution/**/*.js"],
+  "files": ["Distribution"],
   "devDependencies": {
     "@fitbit/sdk": "5.0.1",
     "@fitbit/sdk-cli": "1.7.3",
