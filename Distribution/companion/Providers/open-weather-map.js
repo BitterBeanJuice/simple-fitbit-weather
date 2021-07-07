@@ -64,6 +64,7 @@ export function fetchWeather(apiKey, latitude, longitude) {
             "&lon=" +
             longitude +
             "&exclude=hourly,minutely";
+        console.log(url);
         fetch(encodeURI(url))
             .then(function (response) { return response.json(); })
             .then(function (data) {
