@@ -10,9 +10,9 @@ var _callback;
  */
 export var last;
 /**
-* Trace (for debug mod)
-* @param message to show in the console
-*/
+ * Trace (for debug mod)
+ * @param message to show in the console
+ */
 export function trace(message) {
     console.warn(JSON.stringify(message));
 }
@@ -23,7 +23,7 @@ export function trace(message) {
 export function initialize(callback) {
     // Save callback
     _callback = callback;
-    // Load last file 
+    // Load last file
     // & Notify the application
     load();
 }

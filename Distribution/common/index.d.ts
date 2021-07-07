@@ -11,7 +11,7 @@ export declare const MESSAGE_TYPE = "weather";
  */
 export interface Message {
     type: string;
-    weather: Weather;
+    weather: Forecast;
 }
 /**
  * Conditions
@@ -43,15 +43,15 @@ export interface Weather {
     /**
      * Location found
      */
-    location: string;
+    location?: string;
     /**
      * Full description of weather sitation
      */
-    description: string;
+    description?: string;
     /**
      * Situation for the full day
      */
-    isDay: boolean;
+    isDay?: boolean;
     /**
      * Condition code, refre to ths Conditions const
      */
@@ -63,13 +63,17 @@ export interface Weather {
     /**
      * Date of sunrise
      */
-    sunrise: number;
+    sunrise?: number;
     /**
      * Date of sunset
      */
-    sunset: number;
+    sunset?: number;
     /**
      * Date of curretn data
      */
     timestamp: number;
+}
+export interface Forecast {
+    current: Weather;
+    daily: Weather[];
 }

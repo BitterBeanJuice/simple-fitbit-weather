@@ -3,7 +3,7 @@ import { outbox } from "file-transfer";
 import * as cbor from "cbor";
 import * as messaging from "messaging";
 import { localStorage } from "local-storage";
-import { WEATHER_FILE, MESSAGE_TYPE } from "../common";
+import { WEATHER_FILE, MESSAGE_TYPE, } from "../common";
 import { trace } from "./common";
 import * as weatherClient from "./weather";
 // Export to allow companion app to use common types
@@ -25,7 +25,8 @@ export function initialize(configuration) {
         if (_configuration.refreshInterval >= 5) {
             // We are not allow to have an interval bellow 5
             // Set periodic refresh (interfval as minutes)
-            companion.wakeInterval = MILLISECONDS_PER_MINUTE * _configuration.refreshInterval;
+            companion.wakeInterval =
+                MILLISECONDS_PER_MINUTE * _configuration.refreshInterval;
             companion.addEventListener("wakeinterval", function () { return refresh(); });
         }
     }
@@ -33,7 +34,8 @@ export function initialize(configuration) {
         console.warn("We're not allowed to access to run in the background!");
     }
     try {
-        companion.wakeInterval = MILLISECONDS_PER_MINUTE * _configuration.refreshInterval;
+        companion.wakeInterval =
+            MILLISECONDS_PER_MINUTE * _configuration.refreshInterval;
         companion.addEventListener("wakeinterval", function () { return refresh(); });
     }
     catch (ex) {
@@ -49,10 +51,12 @@ export function refresh() {
     // load the weather from file
     var cachedWeather = loadCache();
     // Update if data are too old or undfined
-    if (cachedWeather === undefined
-        || cachedWeather.timestamp + (_configuration.maximumAge * 60 * 1000) <= Date.now()) {
-        // Call the api 
-        weatherClient.fetchWeather(_configuration.provider, _configuration.apiKey)
+    if (cachedWeather === undefined ||
+        cachedWeather.timestamp + _configuration.maximumAge * 60 * 1000 <=
+            Date.now()) {
+        // Call the api
+        weatherClient
+            .fetchWeather(_configuration.provider, _configuration.apiKey)
             .then(function (data) { return cacheAndSend(data); })
             .catch(function (ex) { return trace(ex); });
     }
@@ -92,7 +96,7 @@ function cacheAndSend(data) {
         // Send via socket
         var message = {
             type: MESSAGE_TYPE,
-            weather: data
+            weather: data,
         };
         messaging.peerSocket.send(message);
     }

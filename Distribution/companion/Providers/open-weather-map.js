@@ -48,38 +48,51 @@ var mapping_codes = {
     801: Conditions.FewClouds,
     802: Conditions.ScatteredClouds,
     803: Conditions.BrokenClouds,
-    804: Conditions.BrokenClouds
+    804: Conditions.BrokenClouds,
 };
+var tempToC = function (value) { return value - 273.15; };
+var tempToF = function (value) { return ((value - 273.15) * 9) / 5 + 32; };
 /**
  * Fetch data from Open Weather Map
  */
 export function fetchWeather(apiKey, latitude, longitude) {
     return new Promise(function (resolve, reject) {
-        var url = 'https://api.openweathermap.org/data/2.5/onecall?appid=' + apiKey + '&lat=' + latitude + '&lon=' + longitude + "&exclude=hourly,minutely";
+        var url = "https://api.openweathermap.org/data/2.5/onecall?appid=" +
+            apiKey +
+            "&lat=" +
+            latitude +
+            "&lon=" +
+            longitude +
+            "&exclude=hourly,minutely";
         fetch(encodeURI(url))
             .then(function (response) { return response.json(); })
             .then(function (data) {
-            if (data.weather === undefined) {
+            var _a;
+            if (data.current === undefined) {
                 reject(data.message);
                 return;
             }
-            var conditionCode = mapping_codes[data.weather[0].id];
-            if (conditionCode === undefined)
-                conditionCode = Conditions.Unknown;
-            var weather = {
-                temperatureC: data.main.temp - 273.15,
-                temperatureF: (data.main.temp - 273.15) * 9 / 5 + 32,
-                location: data.name,
-                description: data.weather[0].description,
-                isDay: (data.dt > data.sys.sunrise && data.dt < data.sys.sunset),
-                conditionCode: conditionCode,
-                realConditionCode: data.weather[0].id,
-                sunrise: data.sys.sunrise * 1000,
-                sunset: data.sys.sunset * 1000,
-                timestamp: Date.now()
+            var currentCondition = (data.current.weather || [])[0].id;
+            var response = {
+                daily: (_a = data.daily) === null || _a === void 0 ? void 0 : _a.map(function (d) {
+                    var condition = (d.weather || [])[0].id;
+                    return {
+                        temperatureC: tempToC(d.temp.max),
+                        temperatureF: tempToF(d.temp.max),
+                        timestamp: d.dt,
+                        conditionCode: mapping_codes[condition] || Conditions.Unknown,
+                        realConditionCode: condition.toString(),
+                    };
+                }),
+                current: {
+                    temperatureC: tempToC(data.current.temp),
+                    temperatureF: tempToF(data.current.temp),
+                    timestamp: data.current.dt,
+                    conditionCode: mapping_codes[currentCondition] || Conditions.Unknown,
+                    realConditionCode: currentCondition.toString(),
+                },
             };
-            // Send the weather data to the device
-            resolve(weather);
+            resolve(response);
         })
             .catch(function (e) { return reject(e.message); });
     });
