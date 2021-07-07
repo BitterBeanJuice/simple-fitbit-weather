@@ -17,7 +17,7 @@ const mapping_codes = {
 const tempToC = (value: number) => value - 273.15;
 const tempToF = (value: number) => ((value - 273.15) * 9) / 5 + 32;
 const getCondition = (value: number) => {
-  if (mapping_codes[value]) {
+  if (mapping_codes[value] !== undefined) {
     return mapping_codes[value];
   }
 

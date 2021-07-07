@@ -14,7 +14,7 @@ var mapping_codes = {
 var tempToC = function (value) { return value - 273.15; };
 var tempToF = function (value) { return ((value - 273.15) * 9) / 5 + 32; };
 var getCondition = function (value) {
-    if (mapping_codes[value]) {
+    if (mapping_codes[value] !== undefined) {
         return mapping_codes[value];
     }
     if (value >= 200 && value < 300) {
