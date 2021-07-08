@@ -65,6 +65,7 @@ export function refresh(): void {
   // Update if data are too old or undfined
   if (
     cachedWeather === undefined ||
+    cachedWeather.timestamp === undefined ||
     cachedWeather.timestamp + _configuration.maximumAge * 60 * 1000 <=
       Date.now()
   ) {
@@ -79,7 +80,7 @@ export function refresh(): void {
 /**
  * Load weather from cache
  */
-function loadCache(): Weather {
+function loadCache(): Forecast {
   try {
     const str = localStorage.getItem(STORAGE_KEY);
     if (str === null) return undefined;

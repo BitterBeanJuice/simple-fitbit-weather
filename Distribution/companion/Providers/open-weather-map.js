@@ -74,6 +74,7 @@ export function fetchWeather(apiKey, latitude, longitude) {
                     conditionCode: getCondition(currentCondition),
                     realConditionCode: currentCondition.toString(),
                 },
+                timestamp: Date.now(),
             };
             resolve(response);
         })

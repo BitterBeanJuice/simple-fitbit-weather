@@ -88,6 +88,7 @@ export function fetchWeather(
             conditionCode: getCondition(currentCondition),
             realConditionCode: currentCondition.toString(),
           },
+          timestamp: Date.now(),
         };
         resolve(response);
       })

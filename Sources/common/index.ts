@@ -90,4 +90,5 @@ export interface Weather {
 export interface Forecast {
   current: Weather;
   daily: Weather[];
+  timestamp: number;
 }

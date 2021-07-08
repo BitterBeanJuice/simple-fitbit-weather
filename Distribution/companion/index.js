@@ -50,8 +50,13 @@ export function initialize(configuration) {
 export function refresh() {
     // load the weather from file
     var cachedWeather = loadCache();
+    console.log(cachedWeather?.timestamp);
+    console.log(cachedWeather?.timestamp + _configuration.maximumAge * 60 * 1000);
+    console.log(cachedWeather?.timestamp + _configuration.maximumAge * 60 * 1000 <=
+    Date.now());
     // Update if data are too old or undfined
     if (cachedWeather === undefined ||
+        cachedWeather.timestamp === undefined ||
         cachedWeather.timestamp + _configuration.maximumAge * 60 * 1000 <=
             Date.now()) {
         // Call the api
