@@ -37,7 +37,7 @@ var getCondition = function (value) {
 /**
  * Fetch data from Open Weather Map
  */
-export function fetchWeather(apiKey, latitude, longitude) {
+export function fetchOpenWeather(apiKey, latitude, longitude) {
     return new Promise(function (resolve, reject) {
         var url = "https://api.openweathermap.org/data/2.5/onecall?appid=" +
             apiKey +
@@ -46,7 +46,7 @@ export function fetchWeather(apiKey, latitude, longitude) {
             "&lon=" +
             longitude +
             "&exclude=hourly,minutely";
-        console.log(url);
+        console.log("Call Weather API " + Date.now());
         fetch(encodeURI(url))
             .then(function (response) { return response.json(); })
             .then(function (data) {
@@ -75,7 +75,12 @@ export function fetchWeather(apiKey, latitude, longitude) {
                     realConditionCode: currentCondition.toString(),
                 },
                 timestamp: Date.now(),
+                location: {
+                    lat: latitude,
+                    lon: longitude,
+                },
             };
+            console.log(JSON.stringify(response.current));
             resolve(response);
         })
             .catch(function (e) { return reject(e.message); });

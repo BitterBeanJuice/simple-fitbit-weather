@@ -87,8 +87,14 @@ export interface Weather {
   timestamp: number;
 }
 
+export interface Location {
+  lat: number;
+  lon: number;
+}
+
 export interface Forecast {
   current: Weather;
   daily: Weather[];
   timestamp: number;
+  location: Location;
 }
