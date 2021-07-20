@@ -104,7 +104,7 @@ var fetchWeather = function (provider, apiKey, location) {
         // Set geolocation options
         var positionOptions = {
             enableHighAccuracy: false,
-            timeout: 3 * MILLISECONDS_PER_MINUTE,
+            timeout: 13 * 1000,
             maximumAge: 120 * MILLISECONDS_PER_MINUTE,
         };
         console.log("Waiting for GPS " + Date.now());

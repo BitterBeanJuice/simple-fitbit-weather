@@ -140,7 +140,7 @@ const fetchWeather = (
         // Set geolocation options
         const positionOptions: PositionOptions = {
             enableHighAccuracy: false,
-            timeout: 15 * MILLISECONDS_PER_MINUTE,
+            timeout: 13 * 1000,
             maximumAge: 120 * MILLISECONDS_PER_MINUTE,
         };
 
