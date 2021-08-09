@@ -1,9 +1,10 @@
-export interface OpenWeather {
+export interface OWWeather {
     lat: number;
     lon: number;
     timezone: string;
     timezone_offset: number;
     current: OWCurrent;
+    hourly?: OWHourlyEntity[] | null;
     daily?: OWDailyEntity[] | null;
     message?: string;
 }
@@ -28,6 +29,22 @@ export interface OWWeatherEntity {
     main: string;
     description: string;
     icon: string;
+}
+export interface OWHourlyEntity {
+    dt: number;
+    temp: number;
+    feels_like: number;
+    pressure: number;
+    humidity: number;
+    dew_point: number;
+    uvi: number;
+    clouds: number;
+    visibility: number;
+    wind_speed: number;
+    wind_deg: number;
+    wind_gust: number;
+    weather?: OWWeatherEntity[] | null;
+    pop: number;
 }
 export interface OWDailyEntity {
     dt: number;

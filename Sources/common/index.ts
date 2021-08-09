@@ -12,89 +12,57 @@ export const MESSAGE_TYPE = "weather";
  * Message send via socket via sockets
  */
 export interface Message {
-  type: string;
-  weather: Forecast;
+    type: string;
+    weather: Forecast;
 }
 
 /**
  * Conditions
  */
 export const Conditions = {
-  ClearSky: 0,
-  FewClouds: 1,
-  ScatteredClouds: 2,
-  BrokenClouds: 3,
-  ShowerRain: 4,
-  Rain: 5,
-  Thunderstorm: 6,
-  Snow: 7,
-  Mist: 8,
-  Unknown: 9,
+    ClearSky: 0,
+    FewClouds: 1,
+    ScatteredClouds: 2,
+    BrokenClouds: 3,
+    ShowerRain: 4,
+    Rain: 5,
+    Thunderstorm: 6,
+    Snow: 7,
+    Mist: 8,
+    Unknown: 9,
 };
 
-/**
- * Weather data
- */
-export interface Weather {
-  /**
-   * Temperature as °C
-   */
-  temperatureC: number;
+export interface CurrentWeather {
+    tempF: number;
+    condition: number;
+    timestamp: number;
+    uvIndex: number;
+}
 
-  /**
-   * Temperature as °K
-   */
-  temperatureF: number;
+export interface DailyWeather {
+    maxF: number;
+    minF: number;
+    condition: number;
+    timestamp: number;
+    uvIndex: number;
+}
 
-  /**
-   * Location found
-   */
-  location?: string;
-
-  /**
-   * Full description of weather sitation
-   */
-  description?: string;
-
-  /**
-   * Situation for the full day
-   */
-  isDay?: boolean;
-
-  /**
-   * Condition code, refre to ths Conditions const
-   */
-  conditionCode: number;
-
-  /**
-   * Code of the real condition
-   */
-  realConditionCode: string;
-
-  /**
-   * Date of sunrise
-   */
-  sunrise?: number;
-
-  /**
-   * Date of sunset
-   */
-  sunset?: number;
-
-  /**
-   * Date of curretn data
-   */
-  timestamp: number;
+export interface HourlyWeather {
+    tempF: number;
+    condition: number;
+    timestamp: number;
+    uvIndex: number;
 }
 
 export interface Location {
-  lat: number;
-  lon: number;
+    lat: number;
+    lon: number;
 }
 
 export interface Forecast {
-  current: Weather;
-  daily: Weather[];
-  timestamp: number;
-  location: Location;
+    current: CurrentWeather;
+    daily: DailyWeather[];
+    hourly: HourlyWeather[];
+    timestamp: number;
+    location: Location;
 }

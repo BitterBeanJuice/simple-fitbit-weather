@@ -1,9 +1,8 @@
 import { me as companion } from "companion";
 import { outbox } from "file-transfer";
 import * as cbor from "cbor";
-import * as messaging from "messaging";
 import { localStorage } from "local-storage";
-import { WEATHER_FILE, MESSAGE_TYPE, } from "../common";
+import { WEATHER_FILE, } from "../common";
 import { trace } from "./common";
 import { geolocation } from "geolocation";
 import { fetchOpenWeather } from "./Providers/open-weather-map";
@@ -84,18 +83,17 @@ function cacheAndSend(data) {
         trace("Set weather cache error :" + JSON.stringify(ex));
     }
     // Test if socket is open
-    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-        // Send via socket
-        var message = {
-            type: MESSAGE_TYPE,
-            weather: data,
-        };
-        messaging.peerSocket.send(message);
-    }
-    else {
-        // Encode data as cbor and send it as file
-        outbox.enqueue(WEATHER_FILE, cbor.encode(data));
-    }
+    // if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    //     // Send via socket
+    //     const message: Message = {
+    //         type: MESSAGE_TYPE,
+    //         weather: data,
+    //     };
+    //     messaging.peerSocket.send(message);
+    // } else {
+    // Encode data as cbor and send it as file
+    outbox.enqueue(WEATHER_FILE, cbor.encode(data));
+    // }
 }
 var fetchWeather = function (provider, apiKey, location) {
     // Create a promise to return
@@ -115,7 +113,7 @@ var fetchWeather = function (provider, apiKey, location) {
             var cached = loadCache();
             var timeSinceLastWeather = (end - ((cached === null || cached === void 0 ? void 0 : cached.timestamp) || 0)) / (60 * 1000);
             console.log("GPS found after " + minutes + " minutes. Weather is " + timeSinceLastWeather + " minutes old.");
-            if (timeSinceLastWeather > 4) {
+            if (timeSinceLastWeather > _configuration.maximumAge) {
                 fetchOpenWeather(apiKey, position.coords.latitude, position.coords.longitude)
                     .then(resolve)
                     .catch(reject);

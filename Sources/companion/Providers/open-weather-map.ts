@@ -1,5 +1,10 @@
-import { Conditions, Forecast, Weather } from "../../common";
-import { OpenWeather } from "./OpenWeatherMapTypes";
+import {
+    Conditions,
+    Forecast,
+    DailyWeather,
+    HourlyWeather,
+} from "../../common";
+import { OWWeather } from "./OpenWeatherMapTypes";
 
 const mapping_codes = {
     511: Conditions.Snow,
@@ -56,13 +61,14 @@ export function fetchOpenWeather(
             latitude +
             "&lon=" +
             longitude +
-            "&exclude=hourly,minutely";
+            "&exclude=minutely" +
+            "&units=imperial";
 
         console.log(`Call Weather API ${Date.now()}`);
 
         fetch(encodeURI(url))
             .then((response) => response.json())
-            .then((data: OpenWeather) => {
+            .then((data: OWWeather) => {
                 if (data.current === undefined) {
                     reject(data.message);
                     return;
@@ -70,23 +76,41 @@ export function fetchOpenWeather(
 
                 const currentCondition = (data.current.weather || [])[0].id;
 
+                console.log(`${data.hourly[0].dt} ${Date.now()}`);
+                if (data.hourly[0].dt * 1000 < Date.now()) {
+                    // Remove first hourly data if it's old
+                    data.hourly.splice(0, 1);
+                }
+
                 const response: Forecast = {
-                    daily: data.daily?.map((d): Weather => {
-                        const condition = (d.weather || [])[0].id;
-                        return {
-                            temperatureC: tempToC(d.temp.max),
-                            temperatureF: tempToF(d.temp.max),
-                            timestamp: d.dt,
-                            conditionCode: getCondition(condition),
-                            realConditionCode: condition.toString(),
-                        };
-                    }),
+                    daily: data.daily
+                        ?.map((d): DailyWeather => {
+                            const condition = (d.weather || [])[0].id;
+                            return {
+                                maxF: d.temp.max,
+                                minF: d.temp.min,
+                                timestamp: d.dt * 1000,
+                                condition: getCondition(condition),
+                                uvIndex: d.uvi,
+                            } as DailyWeather;
+                        })
+                        .slice(0, 7),
+                    hourly: data.hourly
+                        ?.map((d): HourlyWeather => {
+                            const condition = (d.weather || [])[0].id;
+                            return {
+                                tempF: d.temp,
+                                timestamp: d.dt * 1000,
+                                condition: getCondition(condition),
+                                uvIndex: d.uvi,
+                            } as HourlyWeather;
+                        })
+                        .slice(0, 24),
                     current: {
-                        temperatureC: tempToC(data.current.temp),
-                        temperatureF: tempToF(data.current.temp),
-                        timestamp: data.current.dt,
-                        conditionCode: getCondition(currentCondition),
-                        realConditionCode: currentCondition.toString(),
+                        tempF: data.current.temp,
+                        timestamp: data.current.dt * 1000,
+                        condition: getCondition(currentCondition),
+                        uvIndex: data.current.uvi,
                     },
                     timestamp: Date.now(),
                     location: {
@@ -94,7 +118,6 @@ export function fetchOpenWeather(
                         lon: longitude,
                     },
                 };
-                console.log(JSON.stringify(response.current));
                 resolve(response);
             })
             .catch((e) => reject(e.message));

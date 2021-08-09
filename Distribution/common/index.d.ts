@@ -28,58 +28,33 @@ export declare const Conditions: {
     Mist: number;
     Unknown: number;
 };
-/**
- * Weather data
- */
-export interface Weather {
-    /**
-     * Temperature as °C
-     */
-    temperatureC: number;
-    /**
-     * Temperature as °K
-     */
-    temperatureF: number;
-    /**
-     * Location found
-     */
-    location?: string;
-    /**
-     * Full description of weather sitation
-     */
-    description?: string;
-    /**
-     * Situation for the full day
-     */
-    isDay?: boolean;
-    /**
-     * Condition code, refre to ths Conditions const
-     */
-    conditionCode: number;
-    /**
-     * Code of the real condition
-     */
-    realConditionCode: string;
-    /**
-     * Date of sunrise
-     */
-    sunrise?: number;
-    /**
-     * Date of sunset
-     */
-    sunset?: number;
-    /**
-     * Date of curretn data
-     */
+export interface CurrentWeather {
+    tempF: number;
+    condition: number;
     timestamp: number;
+    uvIndex: number;
+}
+export interface DailyWeather {
+    maxF: number;
+    minF: number;
+    condition: number;
+    timestamp: number;
+    uvIndex: number;
+}
+export interface HourlyWeather {
+    tempF: number;
+    condition: number;
+    timestamp: number;
+    uvIndex: number;
 }
 export interface Location {
     lat: number;
     lon: number;
 }
 export interface Forecast {
-    current: Weather;
-    daily: Weather[];
+    current: CurrentWeather;
+    daily: DailyWeather[];
+    hourly: HourlyWeather[];
     timestamp: number;
     location: Location;
 }

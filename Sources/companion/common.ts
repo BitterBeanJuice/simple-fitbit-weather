@@ -1,7 +1,7 @@
 /**
-* Trace (for debug mod)
-* @param message to show in the console
-*/
+ * Trace (for debug mod)
+ * @param message to show in the console
+ */
 export function trace(message: unknown): void {
     console.warn(JSON.stringify(message));
 }
@@ -11,7 +11,6 @@ export function trace(message: unknown): void {
  */
 export enum Providers {
     openweathermap = "owm",
-    weatherbit = "weatherbit"
 }
 
 /**

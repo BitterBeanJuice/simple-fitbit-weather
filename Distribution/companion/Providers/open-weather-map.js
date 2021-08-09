@@ -1,4 +1,4 @@
-import { Conditions } from "../../common";
+import { Conditions, } from "../../common";
 var mapping_codes = {
     511: Conditions.Snow,
     520: Conditions.ShowerRain,
@@ -45,34 +45,48 @@ export function fetchOpenWeather(apiKey, latitude, longitude) {
             latitude +
             "&lon=" +
             longitude +
-            "&exclude=hourly,minutely";
+            "&exclude=minutely" +
+            "&units=imperial";
         console.log("Call Weather API " + Date.now());
         fetch(encodeURI(url))
             .then(function (response) { return response.json(); })
             .then(function (data) {
-            var _a;
+            var _a, _b;
             if (data.current === undefined) {
                 reject(data.message);
                 return;
             }
             var currentCondition = (data.current.weather || [])[0].id;
+            console.log(data.hourly[0].dt + " " + Date.now());
+            if (data.hourly[0].dt * 1000 < Date.now()) {
+                // Remove first hourly data if it's old
+                data.hourly.splice(0, 1);
+            }
             var response = {
                 daily: (_a = data.daily) === null || _a === void 0 ? void 0 : _a.map(function (d) {
                     var condition = (d.weather || [])[0].id;
                     return {
-                        temperatureC: tempToC(d.temp.max),
-                        temperatureF: tempToF(d.temp.max),
-                        timestamp: d.dt,
-                        conditionCode: getCondition(condition),
-                        realConditionCode: condition.toString(),
+                        maxF: d.temp.max,
+                        minF: d.temp.min,
+                        timestamp: d.dt * 1000,
+                        condition: getCondition(condition),
+                        uvIndex: d.uvi,
                     };
-                }),
+                }).slice(0, 7),
+                hourly: (_b = data.hourly) === null || _b === void 0 ? void 0 : _b.map(function (d) {
+                    var condition = (d.weather || [])[0].id;
+                    return {
+                        tempF: d.temp,
+                        timestamp: d.dt * 1000,
+                        condition: getCondition(condition),
+                        uvIndex: d.uvi,
+                    };
+                }).slice(0, 24),
                 current: {
-                    temperatureC: tempToC(data.current.temp),
-                    temperatureF: tempToF(data.current.temp),
-                    timestamp: data.current.dt,
-                    conditionCode: getCondition(currentCondition),
-                    realConditionCode: currentCondition.toString(),
+                    tempF: data.current.temp,
+                    timestamp: data.current.dt * 1000,
+                    condition: getCondition(currentCondition),
+                    uvIndex: data.current.uvi,
                 },
                 timestamp: Date.now(),
                 location: {
@@ -80,7 +94,6 @@ export function fetchOpenWeather(apiKey, latitude, longitude) {
                     lon: longitude,
                 },
             };
-            console.log(JSON.stringify(response.current));
             resolve(response);
         })
             .catch(function (e) { return reject(e.message); });

@@ -115,17 +115,17 @@ function cacheAndSend(data: Forecast) {
     }
 
     // Test if socket is open
-    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-        // Send via socket
-        const message: Message = {
-            type: MESSAGE_TYPE,
-            weather: data,
-        };
-        messaging.peerSocket.send(message);
-    } else {
-        // Encode data as cbor and send it as file
-        outbox.enqueue(WEATHER_FILE, cbor.encode(data));
-    }
+    // if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    //     // Send via socket
+    //     const message: Message = {
+    //         type: MESSAGE_TYPE,
+    //         weather: data,
+    //     };
+    //     messaging.peerSocket.send(message);
+    // } else {
+    // Encode data as cbor and send it as file
+    outbox.enqueue(WEATHER_FILE, cbor.encode(data));
+    // }
 }
 
 const fetchWeather = (
@@ -158,7 +158,7 @@ const fetchWeather = (
                     `GPS found after ${minutes} minutes. Weather is ${timeSinceLastWeather} minutes old.`
                 );
 
-                if (timeSinceLastWeather > 4) {
+                if (timeSinceLastWeather > _configuration.maximumAge) {
                     fetchOpenWeather(
                         apiKey,
                         position.coords.latitude,
